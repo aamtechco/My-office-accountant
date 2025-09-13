@@ -48,30 +48,35 @@
 				</div>
 			</div>
 		</div>
-		<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-	    <div class="container">
-	    	<a class="navbar-brand" href="index.html">ابوالمجد عبدالشافى</a>
-	    	<form action="#" class="searchform order-sm-start order-lg-last">
-          <div class="form-group d-flex">
-            <input type="text" class="form-control pl-3" placeholder="Search">
-            <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span></button>
-          </div>
-        </form>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-	        <span class="fa fa-bars"></span> Menu
-	      </button>
-	      <div class="collapse navbar-collapse" id="ftco-nav">
-	        <ul class="navbar-nav m-auto">
-	        	<li class="nav-item active"><a href="index.html" class="nav-link">الصفحة الرئيسية</a></li>
-	        	<li class="nav-item"><a href="about.html" class="nav-link">من نحن</a></li>
-	        	<li class="nav-item"><a href="services.html" class="nav-link">خدماتنا</a></li>
-	          <li class="nav-item"><a href="cases.html" class="nav-link">أعمالنا السابقة</a></li>
-	          <li class="nav-item"><a href="blog.html" class="nav-link">مدونتنا</a></li>
-	          <li class="nav-item"><a href="contact.html" class="nav-link">تواصل معنا</a></li>
-	        </ul>
-	      </div>
-	    </div>
-	  </nav>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar" dir="rtl">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">ابوالمجد عبدالشافى</a>
+
+    <!-- زر القائمة في الموبايل -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars"></span> القائمة
+    </button>
+
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav ml-auto"> <!-- ml-auto يخليها تبدأ من اليمين -->
+        <li class="nav-item active"><a href="index.html" class="nav-link">الصفحة الرئيسية</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-item"><a href="services.html" class="nav-link">خدماتنا</a></li>
+        <li class="nav-item"><a href="cases.html" class="nav-link">أعمالنا السابقة</a></li>
+        <li class="nav-item"><a href="blog.html" class="nav-link">مدونتنا</a></li>
+        <li class="nav-item"><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+
+      <!-- البحث على الشمال -->
+      <form action="#" class="searchform order-sm-start order-lg-last ml-3">
+        <div class="form-group d-flex">
+          <input type="text" class="form-control pl-3" placeholder="ابحث هنا">
+          <button type="submit" class="form-control search"><span class="fa fa-search"></span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
     <!-- END nav -->
     <div class="hero-wrap">
 	    <div class="home-slider owl-carousel">
