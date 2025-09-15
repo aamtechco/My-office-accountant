@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>تسجيل الدخول - مكتب ابوالمجد عبدالشافى</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body dir="rtl" style="background:#f8f9fa;">
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">مكتب ابوالمجد عبدالشافى</a>
+      </div>
+    </nav>
+    <div class="container d-flex align-items-center justify-content-center" style="min-height:80vh;">
+      <div class="col-md-6 col-lg-4 p-4 bg-white rounded shadow animate__animated animate__fadeIn" style="max-width:400px;">
+        <h3 class="mb-4 text-center">تسجيل الدخول</h3>
+        <form id="loginForm" action="dashboard.html" method="get">
+          <div class="form-group text-right">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" class="form-control text-right" id="email" name="email" required placeholder="ادخل بريدك الإلكتروني">
+          </div>
+          <div class="form-group text-right">
+            <label for="password">كلمة المرور</label>
+            <input type="password" class="form-control text-right" id="password" name="password" required placeholder="ادخل كلمة المرور">
+          </div>
+          <div id="loginError" class="text-danger text-center mb-2" style="display:none;">البريد الإلكتروني أو كلمة المرور غير صحيحة</div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+        </form>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value.trim();
+        if(email === 'admin' && password === 'admin') {
+          // Allow form to submit (redirect to dashboard.html)
+        } else {
+          e.preventDefault();
+          document.getElementById('loginError').style.display = 'block';
+        }
+      });
+    </script>
+  </body>
+</html>
