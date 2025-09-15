@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
   <head>
     <title>تسجيل الدخول - مكتب ابوالمجد عبدالشافى</title>
     <meta charset="utf-8">
@@ -12,17 +12,24 @@
     <link rel="stylesheet" href="css/magnific-popup.css">
     <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      /* بعض تحسينات بسيطة للعرض */
+      body { background: #f8f9fa; font-family: 'Montserrat', sans-serif; }
+      .login-card { max-width: 400px; }
+      .text-right label { float: right; }
+    </style>
   </head>
-  <body dir="rtl" style="background:#f8f9fa;">
+  <body dir="rtl">
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
       <div class="container">
         <a class="navbar-brand" href="index.html">مكتب ابوالمجد عبدالشافى</a>
       </div>
     </nav>
+
     <div class="container d-flex align-items-center justify-content-center" style="min-height:80vh;">
-      <div class="col-md-6 col-lg-4 p-4 bg-white rounded shadow animate__animated animate__fadeIn" style="max-width:400px;">
+      <div class="col-md-6 col-lg-4 p-4 bg-white rounded shadow animate__animated animate__fadeIn login-card">
         <h3 class="mb-4 text-center">تسجيل الدخول</h3>
-        <form id="loginForm" action="dashboard.html" method="get">
+        <form id="loginForm" action="dashboard.html" method="get" novalidate>
           <div class="form-group text-right">
             <label for="email">البريد الإلكتروني</label>
             <input type="email" class="form-control text-right" id="email" name="email" required placeholder="ادخل بريدك الإلكتروني">
@@ -36,18 +43,35 @@
         </form>
       </div>
     </div>
+
+    <!-- السكربتات -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
+      // ديمو: لو الايميل = aamtechco@gmail.com و password = admin -> نعرض رسالة خطأ
+      // أي بيانات أخرى تسمح بالـ submit وتنتقل إلى dashboard.html كما كان
       document.getElementById('loginForm').addEventListener('submit', function(e) {
         var email = document.getElementById('email').value.trim();
         var password = document.getElementById('password').value.trim();
+
+        // Here: treat this specific credential as a WRONG login (as requested)
         if(email === 'aamtechco@gmail.com' && password === 'admin') {
-          // Allow form to submit (redirect to dashboard.html)
-        } else {
           e.preventDefault();
           document.getElementById('loginError').style.display = 'block';
+          // optional: focus back to password
+          document.getElementById('password').focus();
+        } else {
+          // Allow the form to submit (redirect to dashboard.html) for any other credentials
+          // (This is demo behaviour — in real app you'd POST to server and verify)
         }
+      });
+
+      // اختياري: اخفاء رسالة الخطأ لو المستخدم غير الإضافة
+      document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('loginError').style.display = 'none';
+      });
+      document.getElementById('password').addEventListener('input', function() {
+        document.getElementById('loginError').style.display = 'none';
       });
     </script>
   </body>
