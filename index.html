@@ -503,55 +503,6 @@
     	</div>
     </section>
 
-<section class="ftco-section" id="blog-section">
-  <div class="container">
-    <div class="row justify-content-center pb-5 mb-3">
-      <div class="col-md-7 heading-section text-center ftco-animate">
-        <span class="subheading">أعمالنا</span>
-        <h2>آخر أعمال مكتبنا</h2>
-      </div>
-    </div>
-    <div class="row d-flex" id="blog-container">
-      <!-- البوستات هتضاف هنا أوتوماتيك -->
-    </div>
-  </div>
-</section>
-
-<script>
-  fetch("cases.html")
-    .then(res => res.text())
-    .then(data => {
-      let parser = new DOMParser();
-      let htmlDoc = parser.parseFromString(data, "text/html");
-
-      // نفترض إن كل قضية معمولة بـ div.case
-      let cases = htmlDoc.querySelectorAll(".case");
-      let blogContainer = document.getElementById("blog-container");
-
-      cases.forEach(c => {
-        let title = c.querySelector(".case-title").innerText;
-        let date = c.querySelector(".case-date").innerText;
-        let author = c.querySelector(".case-author").innerText;
-        let image = c.querySelector("img").getAttribute("src");
-
-        let blogItem = `
-          <div class="col-md-4 d-flex ftco-animate">
-            <div class="blog-entry align-self-stretch">
-              <a href="cases.html" class="block-20 rounded" style="background-image: url('${image}');"></a>
-              <div class="text p-4">
-                <div class="meta mb-2">
-                  <div><a href="#">${date}</a></div>
-                  <div><a href="#">${author}</a></div>
-                  <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 0</a></div>
-                </div>
-                <h3 class="heading"><a href="cases.html">${title}</a></h3>
-              </div>
-            </div>
-          </div>`;
-        blogContainer.innerHTML += blogItem;
-      });
-    });
-</script>
 		
 
 <section class="ftco-section ftco-no-pb ftco-no-pt bg-secondary" dir="rtl">
