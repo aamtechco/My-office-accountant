@@ -7,11 +7,14 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      .modal-backdrop { z-index: 1040 !important; }
+      .modal { z-index: 1050 !important; }
+      .form-section-title { font-size: 1.1em; font-weight: bold; margin-top: 1.5em; }
+      .required { color: red; }
+      .pointer { cursor: pointer; }
+    </style>
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
     <!-- Top contact/social bar -->
@@ -52,14 +55,16 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="border-bottom:1px solid #eee;">
       <div class="container">
         <ul class="navbar-nav mx-auto flex-row d-flex justify-content-center w-100">
-          <li class="nav-item mx-2 active"><a class="nav-link" href="tasks.html"><span class="fa fa-tasks ml-1"></span>المهام</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-users ml-1"></span>العملاء</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-building ml-1"></span>المكاتب</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-bar-chart ml-1"></span>التقارير</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-user ml-1"></span>المستخدمين</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-lock ml-1"></span>الصلاحيات</a></li>
-          <li class="nav-item mx-2"><a class="nav-link" href="#"><span class="fa fa-database ml-1"></span>قاعدة البيانات</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="dashboard.html"><span class="fa fa-dashboard ml-1"></span>لوحة التحكم</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="tasks.html"><span class="fa fa-tasks ml-1"></span>المهام</a></li>
+          <li class="nav-item mx-2 active"><a class="nav-link" href="clients.html"><span class="fa fa-users ml-1"></span>العملاء</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="offices.html"><span class="fa fa-building ml-1"></span>المكاتب</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="reports.html"><span class="fa fa-bar-chart ml-1"></span>التقارير</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="users.html"><span class="fa fa-user ml-1"></span>المستخدمين</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="roles.html"><span class="fa fa-lock ml-1"></span>الصلاحيات</a></li>
+          <li class="nav-item mx-2"><a class="nav-link" href="database.html"><span class="fa fa-database ml-1"></span>قاعدة البيانات</a></li>
         </ul>
+        <a href="login.html" class="btn btn-danger px-3">تسجيل الخروج</a>
       </div>
     </nav>
     <!-- Dashboard Sections -->

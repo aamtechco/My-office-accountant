@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
   <head>
     <title>العملاء - لوحة التحكم</title>
     <meta charset="utf-8">
@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      .modal-backdrop { z-index: 1040 !important; }
+      .modal { z-index: 1050 !important; }
+      .form-section-title { font-size: 1.1em; font-weight: bold; margin-top: 1.5em; }
+      .required { color: red; }
+      .pointer { cursor: pointer; }
+    </style>
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
     <!-- Top contact/social bar -->
@@ -79,44 +86,178 @@
           <div class="col-12">
             <div class="card shadow-lg animate__animated animate__fadeInUp">
               <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-users text-primary ml-2"></span>قائمة العملاء</h4>
-                <table class="table table-bordered text-center mb-0">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>الاسم</th>
-                      <th>البريد الإلكتروني</th>
-                      <th>الهاتف</th>
-                      <th>إجراءات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>أحمد السعيد</td>
-                      <td>ahmed@email.com</td>
-                      <td>01000000000</td>
-                      <td>
-                        <a href="#" class="btn btn-sm btn-outline-success">تعديل</a>
-                        <a href="#" class="btn btn-sm btn-outline-danger">حذف</a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>منى جمال</td>
-                      <td>mona@email.com</td>
-                      <td>01111111111</td>
-                      <td>
-                        <a href="#" class="btn btn-sm btn-outline-success">تعديل</a>
-                        <a href="#" class="btn btn-sm btn-outline-danger">حذف</a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <a href="#" class="btn btn-primary mt-4">إضافة عميل جديد</a>
+                <h4 class="card-title mb-3" style="text-align:right;"><span class="fa fa-users text-primary ml-2"></span>قائمة العملاء</h4>
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center mb-0" id="clientsTable" style="direction:rtl;">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>رقم العميل</th>
+                        <th>الاسم الكامل</th>
+                        <th>رقم الجوال</th>
+                        <th>اسم الوسيط</th>
+                        <th>رقم وسيط</th>
+                        <th>المدفوع المتفق عليه</th>
+                        <th>إجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- سيتم عرض العملاء هنا بواسطة جافاسكريبت -->
+                    </tbody>
+                  </table>
+                </div>
+                <button class="btn btn-primary mt-4" style="float:right;" onclick="openClientModal()">إضافة عميل جديد</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <!-- Client Modal -->
+    <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true" dir="rtl">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <form id="clientForm" autocomplete="off">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clientModalLabel">بيانات العميل</h5>
+              <button type="button" class="close ml-0" data-dismiss="modal" aria-label="إغلاق">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-4 mb-2">
+                  <label>رقم العميل <span class="required">*</span></label>
+                  <input type="text" class="form-control text-right" id="clientNumber" required readonly>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>الاسم الكامل <span class="required">*</span></label>
+                  <input type="text" class="form-control text-right" id="fullName" required placeholder="ادخل الاسم الكامل">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>رقم الجوال <span class="required">*</span></label>
+                  <input type="text" class="form-control text-right" id="mobile" required pattern="^[0-9]+$" maxlength="15" placeholder="ادخل رقم الجوال">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>اسم الوسيط</label>
+                  <input type="text" class="form-control text-right" id="medianName" placeholder="ادخل اسم الوسيط">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>رقم وسيط</label>
+                  <input type="text" class="form-control text-right" id="medianMobile" pattern="^[0-9]*$" maxlength="15" placeholder="ادخل رقم الوسيط">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>المدفوع المتفق عليه</label>
+                  <input type="text" class="form-control text-right" id="agreedPayment" placeholder="ادخل المبلغ">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>رقم الهوية</label>
+                  <input type="text" class="form-control text-right" id="idNumber" pattern="^[0-9]*$" maxlength="20" placeholder="ادخل رقم الهوية">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>الرقم الضريبي <span class="required">*</span></label>
+                  <input type="text" class="form-control text-right" id="taxNumber" required pattern="^\d{3}-\d{3}-\d{3}$" placeholder="000-000-000">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>رقم السجل التجاري</label>
+                  <input type="text" class="form-control text-right" id="commercialRegNumber" placeholder="ادخل رقم السجل التجاري">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>مجال النشاط</label>
+                  <input type="text" class="form-control text-right" id="activityField" placeholder="ادخل مجال النشاط">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>مكتب السجل التجاري</label>
+                  <input type="text" class="form-control text-right" id="commercialRegOffice" placeholder="ادخل مكتب السجل التجاري">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ تجديد السجل التجاري</label>
+                  <input type="date" class="form-control text-right" id="commercialRegRenewalDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>مكتب الضرائب</label>
+                  <input type="text" class="form-control text-right" id="taxOffice" placeholder="ادخل مكتب الضرائب">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>مكتب ضريبة القيمة المضافة</label>
+                  <input type="text" class="form-control text-right" id="vatTaxOffice" placeholder="ادخل مكتب ضريبة القيمة المضافة">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>فاتورة إلكترونية</label>
+                  <select class="form-control text-right" id="eBill" onchange="toggleEBillFields()">
+                    <option value="مشترك">مشترك</option>
+                    <option value="غير مشترك">غير مشترك</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>قيمة رأس المال</label>
+                  <input type="text" class="form-control text-right" id="capitalAmount" placeholder="ادخل قيمة رأس المال">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ بدء العمل</label>
+                  <input type="date" class="form-control text-right" id="workStartDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ انتهاء العمل</label>
+                  <input type="date" class="form-control text-right" id="workEndDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ آخر فحص ضريبي</label>
+                  <input type="date" class="form-control text-right" id="lastTaxExamineDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ آخر فحص قيمة مضافة</label>
+                  <input type="date" class="form-control text-right" id="lastVatExamineDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ بدء القيمة المضافة</label>
+                  <input type="date" class="form-control text-right" id="vatStartDate">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>اشتراك المنصة</label>
+                  <select class="form-control text-right" id="platformSubscription" onchange="togglePlatformFields()">
+                    <option value="شهر">شهري</option>
+                    <option value="سنة">سنوي</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>تاريخ تجديد اشتراك المنصة</label>
+                  <input type="date" class="form-control text-right" id="platformRenewalDate">
+                </div>
+                <div class="col-md-12 mb-2">
+                  <label>التوكيلات</label>
+                  <div id="agenciesList"></div>
+                  <button type="button" class="btn btn-sm btn-info mt-2 float-right" onclick="addAgency()">إضافة توكيل</button>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>مرفقات</label>
+                  <input type="file" class="form-control text-right" id="attachment">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>بريد جيميل</label>
+                  <input type="email" class="form-control text-right" id="gmailEmail" placeholder="البريد الإلكتروني">
+                  <input type="password" class="form-control mt-1 text-right" id="gmailPassword" placeholder="كلمة المرور">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>بريد الضرائب والقيمة المضافة</label>
+                  <input type="email" class="form-control text-right" id="taxVatEmail" placeholder="البريد الإلكتروني">
+                  <input type="password" class="form-control mt-1 text-right" id="taxVatPassword" placeholder="كلمة المرور">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <label>بريد الفاتورة الإلكترونية</label>
+                  <input type="email" class="form-control text-right" id="eBillEmail" placeholder="البريد الإلكتروني">
+                  <input type="password" class="form-control mt-1 text-right" id="eBillPassword" placeholder="كلمة المرور">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-start;">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+              <button type="submit" class="btn btn-success">حفظ</button>
+            </div>
+            <input type="hidden" id="editIndex">
+          </form>
+        </div>
+      </div>
+    </div>
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">
@@ -130,5 +271,177 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script>
+      // Demo data array
+      let clients = [];
+      let agencyCount = 0;
+      function renderClients() {
+        const tbody = document.querySelector('#clientsTable tbody');
+        tbody.innerHTML = '';
+        clients.forEach((c, i) => {
+          tbody.innerHTML += `<tr>
+            <td>${c.clientNumber}</td>
+            <td>${c.fullName}</td>
+            <td>${c.mobile}</td>
+            <td>${c.medianName || ''}</td>
+            <td>${c.medianMobile || ''}</td>
+            <td>${c.agreedPayment || ''}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-success" onclick="editClient(${i})">تعديل</button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteClient(${i})">حذف</button>
+            </td>
+          </tr>`;
+        });
+      }
+      function openClientModal(editIdx = null) {
+        document.getElementById('clientForm').reset();
+        document.getElementById('agenciesList').innerHTML = '';
+        agencyCount = 0;
+        document.getElementById('editIndex').value = '';
+        if(editIdx !== null) {
+          const c = clients[editIdx];
+          document.getElementById('clientNumber').value = c.clientNumber;
+          document.getElementById('fullName').value = c.fullName;
+          document.getElementById('mobile').value = c.mobile;
+          document.getElementById('medianName').value = c.medianName;
+          document.getElementById('medianMobile').value = c.medianMobile;
+          document.getElementById('agreedPayment').value = c.agreedPayment;
+          document.getElementById('idNumber').value = c.idNumber;
+          document.getElementById('taxNumber').value = c.taxNumber;
+          document.getElementById('commercialRegNumber').value = c.commercialRegNumber;
+          document.getElementById('activityField').value = c.activityField;
+          document.getElementById('commercialRegOffice').value = c.commercialRegOffice;
+          document.getElementById('commercialRegRenewalDate').value = c.commercialRegRenewalDate;
+          document.getElementById('taxOffice').value = c.taxOffice;
+          document.getElementById('vatTaxOffice').value = c.vatTaxOffice;
+          document.getElementById('eBill').value = c.eBill;
+          document.getElementById('capitalAmount').value = c.capitalAmount;
+          document.getElementById('workStartDate').value = c.workStartDate;
+          document.getElementById('workEndDate').value = c.workEndDate;
+          document.getElementById('lastTaxExamineDate').value = c.lastTaxExamineDate;
+          document.getElementById('lastVatExamineDate').value = c.lastVatExamineDate;
+          document.getElementById('vatStartDate').value = c.vatStartDate;
+          document.getElementById('platformSubscription').value = c.platformSubscription;
+          document.getElementById('platformRenewalDate').value = c.platformRenewalDate;
+          // Agencies
+          if(c.agencies && c.agencies.length) {
+            c.agencies.forEach(a => addAgency(a));
+          }
+          document.getElementById('gmailEmail').value = c.gmailEmail;
+          document.getElementById('gmailPassword').value = c.gmailPassword;
+          document.getElementById('taxVatEmail').value = c.taxVatEmail;
+          document.getElementById('taxVatPassword').value = c.taxVatPassword;
+          document.getElementById('eBillEmail').value = c.eBillEmail;
+          document.getElementById('eBillPassword').value = c.eBillPassword;
+          document.getElementById('editIndex').value = editIdx;
+        } else {
+          document.getElementById('clientNumber').value = clients.length ? (parseInt(clients[clients.length-1].clientNumber)+1) : 1;
+        }
+        $('#clientModal').modal('show');
+      }
+      function addAgency(data = null) {
+        agencyCount++;
+        const idx = agencyCount;
+        const div = document.createElement('div');
+        div.className = 'border rounded p-2 mb-2';
+        div.innerHTML = `
+          <div class="form-row">
+            <div class="col-md-4 mb-1">
+              <input type="text" class="form-control" placeholder="اسم العميل" value="${data ? data.client : ''}" name="agencyClient${idx}">
+            </div>
+            <div class="col-md-4 mb-1">
+              <input type="text" class="form-control" placeholder="رقم التوكيل" value="${data ? data.powerNumber : ''}" name="agencyPowerNumber${idx}">
+            </div>
+            <div class="col-md-4 mb-1">
+              <input type="date" class="form-control" placeholder="تاريخ التوكيل" value="${data ? data.powerDate : ''}" name="agencyPowerDate${idx}">
+            </div>
+            <div class="col-md-12 text-left">
+              <button type="button" class="btn btn-sm btn-danger mt-1" onclick="this.parentElement.parentElement.parentElement.remove()">حذف التوكيل</button>
+            </div>
+          </div>
+        `;
+        document.getElementById('agenciesList').appendChild(div);
+      }
+      function editClient(idx) {
+        openClientModal(idx);
+      }
+      function deleteClient(idx) {
+        if(confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+          clients.splice(idx, 1);
+          renderClients();
+        }
+      }
+      function toggleEBillFields() {
+        const eBill = document.getElementById('eBill').value;
+        document.getElementById('eBillEmail').disabled = (eBill === 'غير مشترك');
+        document.getElementById('eBillPassword').disabled = (eBill === 'غير مشترك');
+      }
+      function togglePlatformFields() {
+        const sub = document.getElementById('platformSubscription').value;
+        document.getElementById('vatStartDate').disabled = (sub === 'شهر');
+      }
+      document.getElementById('clientForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Validation
+        const mobile = document.getElementById('mobile').value;
+        const medianMobile = document.getElementById('medianMobile').value;
+        const idNumber = document.getElementById('idNumber').value;
+        const taxNumber = document.getElementById('taxNumber').value;
+        if(mobile && !/^[0-9]+$/.test(mobile)) { alert('رقم الجوال يجب أن يكون أرقام فقط'); return; }
+        if(medianMobile && !/^[0-9]*$/.test(medianMobile)) { alert('رقم وسيط يجب أن يكون أرقام فقط'); return; }
+        if(idNumber && !/^[0-9]*$/.test(idNumber)) { alert('رقم الهوية يجب أن يكون أرقام فقط'); return; }
+        if(taxNumber && !/^\d{3}-\d{3}-\d{3}$/.test(taxNumber)) { alert('الرقم الضريبي يجب أن يكون بهذا الشكل 000-000-000'); return; }
+        // Agencies
+        const agencies = [];
+        document.querySelectorAll('#agenciesList > div').forEach(div => {
+          const client = div.querySelector('input[name^="agencyClient"]').value;
+          const powerNumber = div.querySelector('input[name^="agencyPowerNumber"]').value;
+          const powerDate = div.querySelector('input[name^="agencyPowerDate"]').value;
+          if(client || powerNumber || powerDate) agencies.push({client, powerNumber, powerDate});
+        });
+        const clientData = {
+          clientNumber: document.getElementById('clientNumber').value,
+          fullName: document.getElementById('fullName').value,
+          mobile: document.getElementById('mobile').value,
+          medianName: document.getElementById('medianName').value,
+          medianMobile: document.getElementById('medianMobile').value,
+          agreedPayment: document.getElementById('agreedPayment').value,
+          idNumber: document.getElementById('idNumber').value,
+          taxNumber: document.getElementById('taxNumber').value,
+          commercialRegNumber: document.getElementById('commercialRegNumber').value,
+          activityField: document.getElementById('activityField').value,
+          commercialRegOffice: document.getElementById('commercialRegOffice').value,
+          commercialRegRenewalDate: document.getElementById('commercialRegRenewalDate').value,
+          taxOffice: document.getElementById('taxOffice').value,
+          vatTaxOffice: document.getElementById('vatTaxOffice').value,
+          eBill: document.getElementById('eBill').value,
+          capitalAmount: document.getElementById('capitalAmount').value,
+          workStartDate: document.getElementById('workStartDate').value,
+          workEndDate: document.getElementById('workEndDate').value,
+          lastTaxExamineDate: document.getElementById('lastTaxExamineDate').value,
+          lastVatExamineDate: document.getElementById('lastVatExamineDate').value,
+          vatStartDate: document.getElementById('vatStartDate').value,
+          platformSubscription: document.getElementById('platformSubscription').value,
+          platformRenewalDate: document.getElementById('platformRenewalDate').value,
+          agencies,
+          gmailEmail: document.getElementById('gmailEmail').value,
+          gmailPassword: document.getElementById('gmailPassword').value,
+          taxVatEmail: document.getElementById('taxVatEmail').value,
+          taxVatPassword: document.getElementById('taxVatPassword').value,
+          eBillEmail: document.getElementById('eBillEmail').value,
+          eBillPassword: document.getElementById('eBillPassword').value
+        };
+        const editIdx = document.getElementById('editIndex').value;
+        if(editIdx !== '') {
+          clients[editIdx] = clientData;
+        } else {
+          clients.push(clientData);
+        }
+        $('#clientModal').modal('hide');
+        renderClients();
+      };
+      // Initial render
+      renderClients();
+    </script>
   </body>
 </html>
