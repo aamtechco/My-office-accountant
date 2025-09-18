@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
+
     <!-- Top contact/social bar -->
     <div class="wrap">
       <div class="container">
@@ -32,9 +34,6 @@
                       <a href="https://www.instagram.com/aboelmagd.megzawy" target="_blank" class="d-flex align-items-center justify-content-center">
                         <span class="fa fa-instagram"><i class="sr-only">Instagram</i></span>
                       </a>
-                      <a href="office-sys/index.html" class="d-flex align-items-center justify-content-center">
-                        <span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span>
-                      </a>
                     </p>
                   </div>
                 </div>
@@ -44,6 +43,7 @@
         </div>
       </div>
     </div>
+
     <!-- Dashboard Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="border-bottom:1px solid #eee;">
       <div class="container">
@@ -57,10 +57,11 @@
           <li class="nav-item mx-2"><a class="nav-link" href="roles.html"><span class="fa fa-lock ml-1"></span>الصلاحيات</a></li>
           <li class="nav-item mx-2"><a class="nav-link" href="database.html"><span class="fa fa-database ml-1"></span>قاعدة البيانات</a></li>
         </ul>
-        <a href="login.html" class="btn btn-danger px-3">تسجيل الخروج</a>
+        <a href="index.html" class="btn btn-danger px-3">تسجيل الخروج</a>
       </div>
     </nav>
-    <!-- Offices Section -->
+
+    <!-- Header -->
     <section class="hero-wrap" style="background-image:url('images/bg_3.jpg'); background-size:cover; background-position:center; min-height:300px; position:relative;">
       <div class="overlay" style="background:rgba(0,0,0,0.5);"></div>
       <div class="container">
@@ -68,47 +69,171 @@
           <div class="col-md-8 heading-section text-center ftco-animate text-white" style="position:relative; z-index:2;">
             <span class="subheading" style="color:#fff;">المكاتب</span>
             <h2 style="color:#fff;">إدارة المكاتب</h2>
-            <p style="color:#eee;">هنا يمكنك إضافة وتعديل بيانات المكاتب ومواقعها.</p>
+            <p style="color:#eee;">إضافة وتعديل بيانات المكاتب ومواقعها لكل قسم.</p>
           </div>
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#f8fafc 60%,#e0f7fa 100%); border-radius:8px; margin-bottom:32px;">
+
+    <!-- Commercial Registry Section -->
+    <section class="ftco-section" dir="rtl">
       <div class="container py-4">
-        <div class="row">
-          <div class="col-12">
-            <div class="card shadow-lg animate__animated animate__fadeInUp">
-              <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-building text-info ml-2"></span>قائمة المكاتب</h4>
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    مكتب القاهرة
-                    <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    مكتب الإسكندرية
-                    <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                </ul>
-                <a href="#" class="btn btn-info mt-4">إضافة مكتب جديد</a>
-              </div>
-            </div>
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3"><span class="fa fa-briefcase text-primary ml-2"></span>السجل التجاري</h4>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                مكتب القاهرة
+                <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary mt-4" data-toggle="modal" data-target="#modalCommercial">إضافة مكتب جديد</a>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Office Section -->
+    <section class="ftco-section" dir="rtl">
+      <div class="container py-4">
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3"><span class="fa fa-building text-info ml-2"></span>الضرائب العامة</h4>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                مكتب الإسكندرية
+                <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-info mt-4" data-toggle="modal" data-target="#modalOffice">إضافة مكتب جديد</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VAT & Tax Section -->
+    <section class="ftco-section">
+      <div class="container py-4">
+        <div class="card shadow-lg">
+          <div class="card-body">
+            <h4 class="card-title mb-3"><span class="fa fa-money text-success ml-2"></span>القيمة المضافة</h4>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                مكتب الضرائب - وسط البلد
+                <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-success mt-4" data-toggle="modal" data-target="#modalTax">إضافة مكتب جديد</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">
           <div class="col-md-12 text-center py-3">
             <p class="copyright">
-              &copy;<script>document.write(new Date().getFullYear());</script> جميع الحقوق محفوظة | تم التصميم والتطوير بواسطة <a href="https://www.instagram.com/aboelmagd.megzawy/" target="_blank">أحمد زيد</a>
+              &copy;<script>document.write(new Date().getFullYear());</script> جميع الحقوق محفوظة | تم التصميم والتطوير بواسطة 
+              <a href="https://www.instagram.com/aboelmagd.megzawy/" target="_blank">أحمد زيد</a>
             </p>
           </div>
         </div>
       </div>
     </footer>
+
+    <!-- Modals -->
+    <!-- Commercial Registry Modal -->
+    <div class="modal fade" id="modalCommercial" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">إضافة مكتب - السجل التجاري</h5></div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>اسم المكتب *</label>
+                <input type="text" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>العنوان</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>الموبايل</label>
+                <input type="text" class="form-control">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+            <button class="btn btn-primary">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Office Modal -->
+    <div class="modal fade" id="modalOffice" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">إضافة مكتب - المكاتب</h5></div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>اسم المكتب *</label>
+                <input type="text" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>العنوان</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>الموبايل</label>
+                <input type="text" class="form-control">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+            <button class="btn btn-info">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tax Modal -->
+    <div class="modal fade" id="modalTax" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">إضافة مكتب - القيمة المضافة والضرائب</h5></div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>اسم المكتب *</label>
+                <input type="text" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>العنوان</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>الموبايل</label>
+                <input type="text" class="form-control">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+            <button class="btn btn-success">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
