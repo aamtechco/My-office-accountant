@@ -73,30 +73,30 @@
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#f8fafc 60%,#e0f7fa 100%); border-radius:8px; margin-bottom:32px;">
+    
+    <!-- Task Management Section -->
+    <section class="ftco-section" style="background:#fff; border-radius:8px; margin-bottom:32px;">
       <div class="container py-4">
         <div class="row">
           <div class="col-12">
             <div class="card shadow-lg animate__animated animate__fadeInUp">
               <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-tasks text-primary ml-2"></span>قائمة المهام</h4>
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    مراجعة الحسابات الشهرية
-                    <span><a href="#" class="btn btn-sm btn-outline-success">إنهاء</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    إعداد تقرير ضريبي
-                    <span><a href="#" class="btn btn-sm btn-outline-success">إنهاء</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                </ul>
-                <a href="#" class="btn btn-primary mt-4">إضافة مهمة جديدة</a>
+                <h4 class="card-title mb-3" style="text-align:right;"><span class="fa fa-tasks text-info ml-2"></span>المهام الجارية</h4>
+                <div class="mb-3 d-flex flex-wrap align-items-end">
+                  <select id="savedTaskDropdown" class="form-control w-auto mr-2 mb-2"></select>
+                  <select id="clientDropdown" class="form-control w-auto mr-2 mb-2"></select>
+                  <input type="date" id="dueDate" class="form-control w-auto mr-2 mb-2">
+                  <button class="btn btn-primary mb-2" id="addTaskBtn">إضافة</button>
+                </div>
+                <div id="tasksList"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    
+    <!-- Footer Section -->
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">
@@ -110,5 +110,114 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script>
+// Demo saved tasks (as if from DB)
+let savedTasks = [
+  { id: 1, name: 'مهمة محاسبة', details: 'تفاصيل مهمة محاسبة', price: 100 },
+  { id: 2, name: 'إعداد تقرير', details: 'تفاصيل إعداد تقرير', price: 200 },
+  { id: 3, name: 'مراجعة سنوية', details: 'تفاصيل مراجعة سنوية', price: 300 }
+];
+// Demo clients array
+let clients = [
+  { id: 1, name: 'عميل 1' },
+  { id: 2, name: 'عميل 2' }
+];
+// All tasks (simulate DB)
+let tasks = [
+  // status: 'undergoing' | 'canceled' | 'completed'
+  { savedTaskId: 1, clientId: 1, dueDate: '2024-06-10', status: 'undergoing' },
+  { savedTaskId: 2, clientId: 2, dueDate: '2024-06-15', status: 'undergoing' }
+];
+function renderTaskForm() {
+  // Render saved tasks dropdown
+  const taskSelect = document.getElementById('savedTaskDropdown');
+  taskSelect.innerHTML = '<option value="">اختر مهمة</option>';
+  savedTasks.forEach(t => {
+    taskSelect.innerHTML += `<option value="${t.id}">${t.name}</option>`;
+  });
+  // Render clients dropdown
+  const clientSelect = document.getElementById('clientDropdown');
+  clientSelect.innerHTML = '<option value="">اختر عميل</option>';
+  clients.forEach(c => {
+    clientSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+  // Set due date to today
+  document.getElementById('dueDate').value = new Date().toISOString().slice(0,10);
+}
+function renderTasks() {
+  const list = document.getElementById('tasksList');
+  list.innerHTML = '';
+  tasks.filter(t => t.status === 'undergoing').forEach((t, i) => {
+    const savedTask = savedTasks.find(st => st.id == t.savedTaskId);
+    const client = clients.find(c => c.id == t.clientId);
+    // Calculate total price
+    let extraDetails = t.extraDetails || [];
+    let extraTotal = extraDetails.reduce((sum, d) => sum + (parseFloat(d.price) || 0), 0);
+    let totalPrice = (savedTask ? savedTask.price : 0) + extraTotal;
+    list.innerHTML += `
+      <div class="border rounded p-2 mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>${savedTask ? savedTask.name : ''}</strong> - ${savedTask ? savedTask.details : ''}<br>
+            <small>العميل: ${client ? client.name : ''} | تاريخ الاستحقاق: ${t.dueDate} | السعر الإجمالي: ${totalPrice}</small>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-danger" onclick="cancelTask(${i})">إلغاء</button>
+            <button class="btn btn-sm btn-success" onclick="completeTask(${i})">اكتمال</button>
+            <button class="btn btn-sm btn-secondary" onclick="showAddDetail(${i})">إضافة تفاصيل</button>
+          </div>
+        </div>
+        <div id="extraDetails${i}" class="mt-2">
+          ${extraDetails.map(d => `<div class='small border-top pt-1 text-muted'>${d.text}${d.price ? ' - قيمة إضافية: ' + d.price : ''}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  });
+}
+function addTask() {
+  const savedTaskId = parseInt(document.getElementById('savedTaskDropdown').value);
+  const clientId = parseInt(document.getElementById('clientDropdown').value);
+  const dueDate = document.getElementById('dueDate').value;
+  if(!savedTaskId || !clientId || !dueDate) {
+    alert('يرجى اختيار مهمة وعميل وتاريخ الاستحقاق');
+    return;
+  }
+  tasks.push({ savedTaskId, clientId, dueDate, status: 'undergoing', extraDetails: [] });
+  renderTasks();
+}
+function cancelTask(idx) {
+  // Find the index in the full tasks array
+  const undergoingTasks = tasks.filter(t => t.status === 'undergoing');
+  const task = undergoingTasks[idx];
+  const realIdx = tasks.indexOf(task);
+  tasks[realIdx].status = 'canceled';
+  renderTasks();
+}
+function completeTask(idx) {
+  const undergoingTasks = tasks.filter(t => t.status === 'undergoing');
+  const task = undergoingTasks[idx];
+  const realIdx = tasks.indexOf(task);
+  tasks[realIdx].status = 'completed';
+  renderTasks();
+}
+function showAddDetail(idx) {
+  const undergoingTasks = tasks.filter(t => t.status === 'undergoing');
+  const task = undergoingTasks[idx];
+  const realIdx = tasks.indexOf(task);
+  const text = prompt('أدخل تفاصيل إضافية للمهمة:');
+  if(text !== null && text.trim() !== '') {
+    let price = prompt('أدخل قيمة إضافية (اختياري):');
+    if(price === null || price.trim() === '' || isNaN(price)) price = '';
+    if(!tasks[realIdx].extraDetails) tasks[realIdx].extraDetails = [];
+    tasks[realIdx].extraDetails.push({ text, price });
+    renderTasks();
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  renderTaskForm();
+  renderTasks();
+  document.getElementById('addTaskBtn').onclick = addTask;
+});
+    </script>
   </body>
 </html>

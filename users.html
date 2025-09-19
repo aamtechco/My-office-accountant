@@ -8,6 +8,96 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      .modal-bg { position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:2000; display:none; }
+      .modal-content { background:#fff; max-width:500px; margin:40px auto; border-radius:8px; padding:32px; position:relative; }
+    </style>
+    <script>
+      // Demo roles (simulate from roles page/database)
+      const roles = [
+        { id: 1, name: 'مدير' },
+        { id: 2, name: 'محاسب' },
+        { id: 3, name: 'مستخدم' },
+        { id: 4, name: 'مشرف' }
+      ];
+      // Demo users
+      let users = [
+        { id: 1, name: 'أحمد زيد', email: 'azid@email.com', roleId: 1 },
+        { id: 2, name: 'منى جمال', email: 'mona@email.com', roleId: 2 }
+      ];
+      let editUserId = null;
+      function renderUsersTable() {
+        const tbody = users.map(u => {
+          const role = roles.find(r => r.id === u.roleId);
+          return `<tr>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${role ? role.name : ''}</td>
+            <td>
+              <button class='btn btn-sm btn-outline-success' onclick='showUserModal(${u.id})'>تعديل</button>
+              <button class='btn btn-sm btn-outline-danger' onclick='deleteUser(${u.id})'>حذف</button>
+            </td>
+          </tr>`;
+        }).join('');
+        document.getElementById('usersTbody').innerHTML = tbody;
+      }
+      function showUserModal(id = null) {
+        editUserId = id;
+        const modal = document.getElementById('userModal');
+        const nameInput = document.getElementById('userName');
+        const emailInput = document.getElementById('userEmail');
+        const passInput = document.getElementById('userPassword');
+        const roleSelect = document.getElementById('userRole');
+        nameInput.value = '';
+        emailInput.value = '';
+        passInput.value = '';
+        roleSelect.innerHTML = roles.map(r => `<option value='${r.id}'>${r.name}</option>`).join('');
+        if(id) {
+          const user = users.find(u => u.id === id);
+          nameInput.value = user.name;
+          emailInput.value = user.email;
+          roleSelect.value = user.roleId;
+          passInput.placeholder = 'اتركه فارغاً للإبقاء على كلمة المرور الحالية';
+        } else {
+          passInput.placeholder = '';
+        }
+        modal.style.display = 'block';
+      }
+      function closeUserModal() {
+        document.getElementById('userModal').style.display = 'none';
+      }
+      function saveUser() {
+        const name = document.getElementById('userName').value.trim();
+        const email = document.getElementById('userEmail').value.trim();
+        const pass = document.getElementById('userPassword').value;
+        const roleId = parseInt(document.getElementById('userRole').value);
+        if(!name || !email || !roleId) { alert('يرجى إدخال جميع البيانات'); return; }
+        if(editUserId) {
+          const idx = users.findIndex(u => u.id === editUserId);
+          users[idx].name = name;
+          users[idx].email = email;
+          users[idx].roleId = roleId;
+          // Password update is ignored in demo
+        } else {
+          const newId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
+          users.push({ id: newId, name, email, roleId });
+        }
+        closeUserModal();
+        renderUsersTable();
+      }
+      function deleteUser(id) {
+        if(confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+          users = users.filter(u => u.id !== id);
+          renderUsersTable();
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        renderUsersTable();
+        document.getElementById('addUserBtn').onclick = () => showUserModal();
+        document.getElementById('closeUserModal').onclick = closeUserModal;
+        document.getElementById('saveUserBtn').onclick = saveUser;
+      });
+    </script>
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
     <!-- Top contact/social bar -->
@@ -73,50 +163,58 @@
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#f8fafc 60%,#e0f7fa 100%); border-radius:8px; margin-bottom:32px;">
+    <section class="ftco-section" style="background:#fff; border-radius:8px; margin-bottom:32px;">
       <div class="container py-4">
         <div class="row">
           <div class="col-12">
             <div class="card shadow-lg animate__animated animate__fadeInUp">
               <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-user text-secondary ml-2"></span>قائمة المستخدمين</h4>
-                <table class="table table-bordered text-center mb-0">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>الاسم</th>
-                      <th>البريد الإلكتروني</th>
-                      <th>الدور</th>
-                      <th>إجراءات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>أحمد زيد</td>
-                      <td>azid@email.com</td>
-                      <td>مدير</td>
-                      <td>
-                        <a href="#" class="btn btn-sm btn-outline-success">تعديل</a>
-                        <a href="#" class="btn btn-sm btn-outline-danger">حذف</a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>منى جمال</td>
-                      <td>mona@email.com</td>
-                      <td>محاسب</td>
-                      <td>
-                        <a href="#" class="btn btn-sm btn-outline-success">تعديل</a>
-                        <a href="#" class="btn btn-sm btn-outline-danger">حذف</a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <a href="#" class="btn btn-secondary mt-4">إضافة مستخدم جديد</a>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <button class="btn btn-secondary" id="addUserBtn"><span class="fa fa-plus ml-1"></span>إضافة مستخدم جديد</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center mb-0">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>الاسم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الدور</th>
+                        <th>إجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersTbody"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <!-- User Modal -->
+    <div id="userModal" class="modal-bg">
+      <div class="modal-content">
+        <button id="closeUserModal" style="position:absolute; left:16px; top:16px; background:none; border:none; font-size:24px;">&times;</button>
+        <h5 class="mb-3">إضافة / تعديل مستخدم</h5>
+        <div class="form-group">
+          <label>الاسم</label>
+          <input type="text" class="form-control" id="userName" placeholder="ادخل اسم المستخدم">
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" class="form-control" id="userEmail" placeholder="ادخل البريد الإلكتروني">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" class="form-control" id="userPassword" placeholder="ادخل كلمة المرور">
+        </div>
+        <div class="form-group">
+          <label>الدور</label>
+          <select class="form-control" id="userRole"></select>
+        </div>
+        <button class="btn btn-success" id="saveUserBtn">حفظ</button>
+      </div>
+    </div>
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">

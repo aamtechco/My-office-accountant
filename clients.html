@@ -167,7 +167,9 @@
                 </div>
                 <div class="col-md-4 mb-2">
                   <label>مكتب السجل التجاري</label>
-                  <input type="text" class="form-control text-right" id="commercialRegOffice" placeholder="ادخل مكتب السجل التجاري">
+                  <select class="form-control text-right" id="commercialRegOffice">
+                    <option value="مكتب القاهرة">مكتب القاهرة</option>
+                  </select>
                 </div>
                 <div class="col-md-4 mb-2">
                   <label>تاريخ تجديد السجل التجاري</label>
@@ -175,11 +177,15 @@
                 </div>
                 <div class="col-md-4 mb-2">
                   <label>مكتب الضرائب</label>
-                  <input type="text" class="form-control text-right" id="taxOffice" placeholder="ادخل مكتب الضرائب">
+                  <select class="form-control text-right" id="taxOffice">
+                    <option value="مكتب الإسكندرية">مكتب الإسكندرية</option>
+                  </select>
                 </div>
                 <div class="col-md-4 mb-2">
                   <label>مكتب ضريبة القيمة المضافة</label>
-                  <input type="text" class="form-control text-right" id="vatTaxOffice" placeholder="ادخل مكتب ضريبة القيمة المضافة">
+                  <select class="form-control text-right" id="vatTaxOffice">
+                    <option value="مكتب الضرائب - وسط البلد">مكتب الضرائب - وسط البلد</option>
+                  </select>
                 </div>
                 <div class="col-md-4 mb-2">
                   <label>فاتورة إلكترونية</label>
@@ -319,10 +325,10 @@
           document.getElementById('workStartDate').value = c.workStartDate;
           document.getElementById('workEndDate').value = c.workEndDate;
           document.getElementById('lastTaxExamineDate').value = c.lastTaxExamineDate;
-          document.getElementById('lastVatExamineDate').value = c.lastVatExamineDate;
+          document.getElementById('lastVatExamineDate').value = c.vatStartDate;
           document.getElementById('vatStartDate').value = c.vatStartDate;
           document.getElementById('platformSubscription').value = c.platformSubscription;
-          document.getElementById('platformRenewalDate').value = c.platformRenewalDate;
+          togglePlatformFields();
           // Agencies
           if(c.agencies && c.agencies.length) {
             c.agencies.forEach(a => addAgency(a));
@@ -379,6 +385,7 @@
       function togglePlatformFields() {
         const sub = document.getElementById('platformSubscription').value;
         document.getElementById('vatStartDate').disabled = (sub === 'شهر');
+        document.getElementById('lastVatExamineDate').disabled = (sub === 'شهر');
       }
       document.getElementById('clientForm').onsubmit = function(e) {
         e.preventDefault();
@@ -419,7 +426,7 @@
           workStartDate: document.getElementById('workStartDate').value,
           workEndDate: document.getElementById('workEndDate').value,
           lastTaxExamineDate: document.getElementById('lastTaxExamineDate').value,
-          lastVatExamineDate: document.getElementById('lastVatExamineDate').value,
+          lastVatExamineDate: document.getElementById('vatStartDate').value,
           vatStartDate: document.getElementById('vatStartDate').value,
           platformSubscription: document.getElementById('platformSubscription').value,
           platformRenewalDate: document.getElementById('platformRenewalDate').value,
@@ -442,6 +449,10 @@
       };
       // Initial render
       renderClients();
+
+      document.getElementById('vatStartDate').addEventListener('input', function() {
+        document.getElementById('lastVatExamineDate').value = this.value;
+      });
     </script>
   </body>
 </html>

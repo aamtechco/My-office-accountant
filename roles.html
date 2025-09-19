@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+  .permissions-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+  .permissions-col { flex: 1 1 200px; min-width: 200px; }
+  .permissions-col label { display: block; margin-bottom: 6px; }
+</style>
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
     <!-- Top contact/social bar -->
@@ -73,30 +78,55 @@
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#f8fafc 60%,#e0f7fa 100%); border-radius:8px; margin-bottom:32px;">
+    <section class="ftco-section" style="background:#fff; border-radius:8px; margin-bottom:32px;">
       <div class="container py-4">
         <div class="row">
           <div class="col-12">
             <div class="card shadow-lg animate__animated animate__fadeInUp">
               <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-lock text-dark ml-2"></span>قائمة الصلاحيات</h4>
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    مدير النظام
-                    <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    محاسب
-                    <span><a href="#" class="btn btn-sm btn-outline-success">تعديل</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                </ul>
-                <a href="#" class="btn btn-dark mt-4">إضافة صلاحية جديدة</a>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <button class="btn btn-primary" id="addRoleBtn"><span class="fa fa-plus ml-1"></span>إضافة دور جديد</button>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2">بحث:</span>
+                    <input type="text" class="form-control" style="width:180px;" placeholder="مثال بحث" disabled>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center mb-0" style="direction:rtl;">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>الاسم</th>
+                        <th>عدد الصلاحيات</th>
+                        <th>العمليات</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rolesTbody"></tbody>
+                  </table>
+                  <div class="mt-2 text-left"><small>إظهار <span id="rolesCount"></span> من أصل <span id="rolesCount"></span> مدخل</small></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <!-- Role Modal -->
+    <div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:2000;">
+      <div style="background:#fff; max-width:700px; margin:40px auto; border-radius:8px; padding:32px; position:relative;">
+        <button id="closeRoleModal" style="position:absolute; left:16px; top:16px; background:none; border:none; font-size:24px;">&times;</button>
+        <h5 class="mb-3">إضافة / تعديل دور</h5>
+        <div class="form-group">
+          <label>اسم الدور</label>
+          <input type="text" class="form-control" id="roleName" placeholder="ادخل اسم الدور">
+        </div>
+        <div class="form-group">
+          <label>الصلاحيات</label>
+          <div class="mb-2"><label><input type="checkbox" id="selectAllPerms"> جميع الصلاحيات</label></div>
+          <div id="permissionsList"></div>
+        </div>
+        <button class="btn btn-success" id="saveRoleBtn">حفظ</button>
+      </div>
+    </div>
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">
@@ -110,5 +140,102 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script>
+// Dashboard-relevant permissions
+const allPermissions = [
+  'عرض لوحة التحكم',
+  'إدارة المهام',
+  'إدارة العملاء',
+  'إدارة المكاتب',
+  'إدارة التقارير',
+  'إدارة المستخدمين',
+  'إدارة الصلاحيات',
+  'إدارة قاعدة البيانات'
+];
+// Demo roles
+let roles = [
+  { id: 1, name: 'مكتب', permissions: ['إدارة المهام','إدارة العملاء'] },
+  { id: 2, name: 'مدير مكتب', permissions: ['إدارة المهام','إدارة العملاء','إدارة المكاتب'] },
+  { id: 3, name: 'admin', permissions: allPermissions.slice(0, 5) },
+  { id: 4, name: 'super_admin', permissions: allPermissions }
+];
+let editRoleId = null;
+function renderRolesTable() {
+  const tbody = roles.map((role, idx) => `
+    <tr>
+      <td>${role.name}</td>
+      <td>${role.permissions.length}</td>
+      <td>
+        <button class='btn btn-sm btn-outline-success' onclick='showRoleModal(${role.id})'>تعديل</button>
+        <button class='btn btn-sm btn-outline-danger' onclick='deleteRole(${role.id})'>حذف</button>
+      </td>
+    </tr>
+  `).join('');
+  document.getElementById('rolesTbody').innerHTML = tbody;
+  document.getElementById('rolesCount').textContent = roles.length;
+}
+function showRoleModal(id = null) {
+  editRoleId = id;
+  const modal = document.getElementById('roleModal');
+  const nameInput = document.getElementById('roleName');
+  const permsDiv = document.getElementById('permissionsList');
+  const selectAll = document.getElementById('selectAllPerms');
+  nameInput.value = '';
+  selectAll.checked = false;
+  // Permissions grid (1 column for 8 items)
+  let html = '<div class="permissions-col">';
+  for(let i=0; i<allPermissions.length; i++) {
+    html += `<label><input type='checkbox' class='permCheck' value='${allPermissions[i]}'> ${allPermissions[i]}</label>`;
+  }
+  html += '</div>';
+  permsDiv.innerHTML = `<div class='permissions-grid'>${html}</div>`;
+  // If edit, fill values
+  if(id) {
+    const role = roles.find(r => r.id === id);
+    nameInput.value = role.name;
+    setTimeout(() => {
+      document.querySelectorAll('.permCheck').forEach(chk => {
+        chk.checked = role.permissions.includes(chk.value);
+      });
+      selectAll.checked = role.permissions.length === allPermissions.length;
+    }, 0);
+  }
+  modal.style.display = 'block';
+}
+function closeRoleModal() {
+  document.getElementById('roleModal').style.display = 'none';
+}
+function saveRole() {
+  const name = document.getElementById('roleName').value.trim();
+  const perms = Array.from(document.querySelectorAll('.permCheck:checked')).map(chk => chk.value);
+  if(!name) { alert('يرجى إدخال اسم الدور'); return; }
+  if(perms.length === 0) { alert('يرجى اختيار صلاحية واحدة على الأقل'); return; }
+  if(editRoleId) {
+    const idx = roles.findIndex(r => r.id === editRoleId);
+    roles[idx].name = name;
+    roles[idx].permissions = perms;
+  } else {
+    const newId = roles.length ? Math.max(...roles.map(r => r.id)) + 1 : 1;
+    roles.push({ id: newId, name, permissions: perms });
+  }
+  closeRoleModal();
+  renderRolesTable();
+}
+function deleteRole(id) {
+  if(confirm('هل أنت متأكد من حذف هذا الدور؟')) {
+    roles = roles.filter(r => r.id !== id);
+    renderRolesTable();
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  renderRolesTable();
+  document.getElementById('addRoleBtn').onclick = () => showRoleModal();
+  document.getElementById('closeRoleModal').onclick = closeRoleModal;
+  document.getElementById('saveRoleBtn').onclick = saveRole;
+  document.getElementById('selectAllPerms').onchange = function() {
+    document.querySelectorAll('.permCheck').forEach(chk => chk.checked = this.checked);
+  };
+});
+    </script>
   </body>
 </html>

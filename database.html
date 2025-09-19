@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      .db-form-label { font-weight: 500; margin-bottom: 4px; }
+    </style>
   </head>
   <body dir="rtl" style="background:#f8f9fa;">
     <!-- Top contact/social bar -->
@@ -73,23 +76,16 @@
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#e0f7fa 60%,#f8fafc 100%); border-radius:8px; margin-bottom:32px;">
+    <section class="ftco-section" style="background:#fff; border-radius:8px; margin-bottom:32px;">
       <div class="container py-4">
         <div class="row">
           <div class="col-12">
             <div class="card shadow-lg animate__animated animate__fadeInUp">
               <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-database text-primary ml-2"></span>إدارة النسخ الاحتياطي</h4>
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    إنشاء نسخة احتياطية جديدة
-                    <span><a href="#" class="btn btn-sm btn-outline-primary">إنشاء</a></span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    استعادة نسخة احتياطية
-                    <span><a href="#" class="btn btn-sm btn-outline-success">استعادة</a></span>
-                  </li>
-                </ul>
+                <h4 class="card-title mb-3"><span class="fa fa-cogs text-info ml-2"></span>إعدادات الاتصال بقاعدة البيانات</h4>
+                <form id="dbSettingsForm" autocomplete="off"></form>
+                <hr>
+                <div id="backupRestoreSection"></div>
               </div>
             </div>
           </div>
@@ -109,5 +105,65 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+      let dbSettings = {
+        supabaseUrl: '',
+        supabaseKey: ''
+      };
+      let supabase = null;
+      function renderDbForm() {
+        document.getElementById('dbSettingsForm').innerHTML = `
+          <div class='form-group'>
+            <label class='db-form-label'>Supabase URL</label>
+            <input type='text' class='form-control' id='supabaseUrl' value='${dbSettings.supabaseUrl}' placeholder='https://xxxx.supabase.co'>
+          </div>
+          <div class='form-group'>
+            <label class='db-form-label'>Supabase API Key</label>
+            <input type='text' class='form-control' id='supabaseKey' value='${dbSettings.supabaseKey}' placeholder='public-anon-key'>
+          </div>
+          <button class='btn btn-success' onclick='saveDbSettings()'>حفظ الإعدادات</button>
+        `;
+      }
+      function saveDbSettings() {
+        dbSettings.supabaseUrl = document.getElementById('supabaseUrl').value.trim();
+        dbSettings.supabaseKey = document.getElementById('supabaseKey').value.trim();
+        if(dbSettings.supabaseUrl && dbSettings.supabaseKey) {
+          supabase = window.supabase.createClient(dbSettings.supabaseUrl, dbSettings.supabaseKey);
+          alert('تم حفظ إعدادات Supabase!');
+        } else {
+          supabase = null;
+          alert('يرجى إدخال بيانات Supabase كاملة');
+        }
+        renderBackupRestore();
+      }
+      function renderBackupRestore() {
+        const enabled = dbSettings.supabaseUrl && dbSettings.supabaseKey;
+        document.getElementById('backupRestoreSection').innerHTML = `
+          <h4 class='card-title mb-3'><span class='fa fa-database text-primary ml-2'></span>النسخ الاحتياطي والاستعادة</h4>
+          <div class='mb-3'>
+            <button class='btn btn-outline-primary mr-2' ${!enabled?'disabled':''} onclick='backupDb()'>إنشاء نسخة احتياطية</button>
+            <label class='btn btn-outline-success mb-0' ${!enabled?'disabled':''}>
+              استعادة نسخة احتياطية
+              <input type='file' id='restoreFile' style='display:none' onchange='restoreDb()' ${!enabled?'disabled':''}>
+            </label>
+          </div>
+          <div id='dbActionMsg' class='mt-2'></div>
+        `;
+      }
+      function backupDb() {
+        document.getElementById('dbActionMsg').innerHTML = '<span class="text-info">(تجريبي) تم تنفيذ عملية النسخ الاحتياطي.</span>';
+      }
+      function restoreDb() {
+        const file = document.getElementById('restoreFile').files[0];
+        if(file) {
+          document.getElementById('dbActionMsg').innerHTML = `<span class='text-info'>(تجريبي) تم تنفيذ عملية الاستعادة من الملف: ${file.name}</span>`;
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        renderDbForm();
+        renderBackupRestore();
+      });
+    </script>
   </body>
 </html>

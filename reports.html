@@ -73,36 +73,30 @@
         </div>
       </div>
     </section>
-    <section class="ftco-section" style="background:linear-gradient(120deg,#f8fafc 60%,#e0f7fa 100%); border-radius:8px; margin-bottom:32px;">
-      <div class="container py-4">
-        <div class="row">
-          <div class="col-12">
-            <div class="card shadow-lg animate__animated animate__fadeInUp">
-              <div class="card-body">
-                <h4 class="card-title mb-3"><span class="fa fa-bar-chart text-warning ml-2"></span>قائمة التقارير</h4>
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    تقرير مالي شهري
-                    <span><a href="#" class="btn btn-sm btn-outline-primary">عرض</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    تقرير ضريبي سنوي
-                    <span><a href="#" class="btn btn-sm btn-outline-primary">عرض</a> <a href="#" class="btn btn-sm btn-outline-danger">حذف</a></span>
-                  </li>
-                </ul>
-                <a href="#" class="btn btn-warning mt-4">إنشاء تقرير جديد</a>
-              </div>
+    <section class="ftco-section" style="background:#fff; border-radius:8px; margin-bottom:32px;">
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-lg animate__animated animate__fadeInUp">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="text-align:right;"><span class="fa fa-bar-chart text-warning ml-2"></span>أنواع التقارير</h4>
+            <div class="mb-4">
+              <button class="btn btn-info mr-2" onclick="showClientReportUI()">تقرير عميل</button>
+              <button class="btn btn-secondary" onclick="showOfficeReportUI()">تقرير المكتب</button>
             </div>
+            <div id="reportContent"></div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
     <footer class="footer mt-5">
       <div class="container-fluid px-lg-5">
         <div class="row">
           <div class="col-md-12 text-center py-3">
             <p class="copyright">
-              &copy;<script>document.write(new Date().getFullYear());</script> جميع الحقوق محفوظة | تم التصميم والتطوير بواسطة <a href="https://www.instagram.com/aboelmagd.megzawy/" target="_blank">أحمد زيد</a>
+              &copy;<script>document.write(new Date().getFullYear());</script> جميع الحقوق محفوظة | تم التصميم والت تطوير بواسطة <a href="https://www.instagram.com/aboelmagd.megzawy/" target="_blank">أحمد زيد</a>
             </p>
           </div>
         </div>
@@ -110,5 +104,189 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+// Demo clients
+let clients = [
+  { id: 1, name: 'عميل 1', mobile: '01000000001', email: 'client1@email.com', address: 'العنوان 1', details: 'تفاصيل إضافية 1' },
+  { id: 2, name: 'عميل 2', mobile: '01000000002', email: 'client2@email.com', address: 'العنوان 2', details: 'تفاصيل إضافية 2' }
+];
+// Demo tasks
+let savedTasks = [
+  { id: 1, name: 'مهمة محاسبة', details: 'تفاصيل مهمة محاسبة', price: 100 },
+  { id: 2, name: 'إعداد تقرير', details: 'تفاصيل إعداد تقرير', price: 200 },
+  { id: 3, name: 'مراجعة سنوية', details: 'تفاصيل مراجعة سنوية', price: 300 }
+];
+let tasks = [
+  { savedTaskId: 1, clientId: 1, dueDate: '2024-06-10', status: 'completed', extraDetails: [] },
+  { savedTaskId: 2, clientId: 1, dueDate: '2024-06-15', status: 'undergoing', extraDetails: [] },
+  { savedTaskId: 3, clientId: 1, dueDate: '2024-06-20', status: 'canceled', extraDetails: [] },
+  { savedTaskId: 2, clientId: 2, dueDate: '2024-06-18', status: 'completed', extraDetails: [] }
+];
+function showClientReportUI() {
+  document.getElementById('reportContent').innerHTML = `
+    <div class='mb-3 d-flex flex-wrap align-items-end'>
+      <select id='clientReportDropdown' class='form-control w-auto mr-2 mb-2'>
+        <option value=''>اختر عميل</option>
+        ${clients.map(c => `<option value='${c.id}'>${c.name}</option>`).join('')}
+      </select>
+      <button class='btn btn-primary mb-2' onclick='generateClientReport()'>توليد التقرير</button>
+    </div>
+    <div id='clientReportResult'></div>
+  `;
+}
+function generateClientReport() {
+  const clientId = parseInt(document.getElementById('clientReportDropdown').value);
+  if(!clientId) { alert('يرجى اختيار عميل'); return; }
+  const client = clients.find(c => c.id === clientId);
+  const clientTasks = tasks.filter(t => t.clientId === clientId);
+  const completed = clientTasks.filter(t => t.status === 'completed');
+  const ongoing = clientTasks.filter(t => t.status === 'undergoing');
+  const canceled = clientTasks.filter(t => t.status === 'canceled');
+  function taskRows(arr) {
+    if(arr.length === 0) return '<tr><td colspan="4">لا يوجد</td></tr>';
+    return arr.map(t => {
+      const st = savedTasks.find(s => s.id === t.savedTaskId);
+      return `<tr><td>${st ? st.name : ''}</td><td>${st ? st.details : ''}</td><td>${t.dueDate}</td><td>${st ? st.price : ''}</td></tr>`;
+    }).join('');
+  }
+  document.getElementById('clientReportResult').innerHTML = `
+    <div id='printableReport' style='background:#f9f9f9; padding:20px; border-radius:8px;'>
+      <h5 class='mb-3'>بيانات العميل</h5>
+      <table class='table table-bordered text-right'><tbody>
+        <tr><th>الاسم</th><td>${client.name}</td></tr>
+        <tr><th>الجوال</th><td>${client.mobile}</td></tr>
+        <tr><th>البريد الإلكتروني</th><td>${client.email}</td></tr>
+        <tr><th>العنوان</th><td>${client.address}</td></tr>
+        <tr><th>تفاصيل إضافية</th><td>${client.details}</td></tr>
+      </tbody></table>
+      <h5 class='mt-4 mb-2'>المهام المكتملة</h5>
+      <table class='table table-bordered text-right'><thead><tr><th>اسم المهمة</th><th>التفاصيل</th><th>تاريخ الاستحقاق</th><th>السعر</th></tr></thead><tbody>${taskRows(completed)}</tbody></table>
+      <h5 class='mt-4 mb-2'>المهام الجارية</h5>
+      <table class='table table-bordered text-right'><thead><tr><th>اسم المهمة</th><th>التفاصيل</th><th>تاريخ الاستحقاق</th><th>السعر</th></tr></thead><tbody>${taskRows(ongoing)}</tbody></table>
+      <h5 class='mt-4 mb-2'>المهام الملغاة</h5>
+      <table class='table table-bordered text-right'><thead><tr><th>اسم المهمة</th><th>التفاصيل</th><th>تاريخ الاستحقاق</th><th>السعر</th></tr></thead><tbody>${taskRows(canceled)}</tbody></table>
+    </div>
+    <div class='mt-3'>
+      <button class='btn btn-success mr-2' onclick='printReport()'>طباعة</button>
+      <button class='btn btn-warning' onclick='exportPDF()'>تصدير PDF</button>
+    </div>
+  `;
+}
+function printReport() {
+  const printContents = document.getElementById('printableReport').innerHTML;
+  const win = window.open('', '', 'height=700,width=900');
+  win.document.write('<html><head><title>تقرير عميل</title>');
+  win.document.write('<style>body{direction:rtl;font-family:tahoma,Arial;}</style>');
+  win.document.write('</head><body >');
+  win.document.write(printContents);
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+}
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+  doc.html(document.getElementById('printableReport'), {
+    callback: function (doc) {
+      doc.save('تقرير_عميل.pdf');
+    },
+    margin: [20, 20, 20, 20],
+    autoPaging: 'text',
+    html2canvas: { scale: 1, useCORS: true },
+    x: 0,
+    y: 0
+  });
+}
+function showOfficeReportUI() {
+  document.getElementById('reportContent').innerHTML = `
+    <div class='mb-3 d-flex flex-wrap align-items-end'>
+      <label class='mr-2 mb-0'>من</label>
+      <input type='date' id='officeFromDate' class='form-control w-auto mr-2 mb-2'>
+      <label class='mr-2 mb-0'>إلى</label>
+      <input type='date' id='officeToDate' class='form-control w-auto mr-2 mb-2'>
+      <button class='btn btn-primary mb-2' onclick='generateOfficeReport()'>توليد التقرير</button>
+    </div>
+    <div id='officeReportResult'></div>
+  `;
+}
+function generateOfficeReport() {
+  const from = document.getElementById('officeFromDate').value;
+  const to = document.getElementById('officeToDate').value;
+  if(!from || !to) { alert('يرجى اختيار تاريخ البداية والنهاية'); return; }
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+  // Filter tasks in date range
+  const filtered = tasks.filter(t => {
+    const d = new Date(t.dueDate);
+    return d >= fromDate && d <= toDate;
+  });
+  function taskRows(arr) {
+    if(arr.length === 0) return '<tr><td colspan="5">لا يوجد</td></tr>';
+    return arr.map(t => {
+      const st = savedTasks.find(s => s.id === t.savedTaskId);
+      const client = clients.find(c => c.id === t.clientId);
+      return `<tr><td>${client ? client.name : ''}</td><td>${st ? st.name : ''}</td><td>${t.dueDate}</td><td>${statusLabel(t.status)}</td><td>${st ? st.price : ''}</td></tr>`;
+    }).join('');
+  }
+  function statusLabel(status) {
+    if(status === 'completed') return 'مكتملة';
+    if(status === 'undergoing') return 'جارية';
+    if(status === 'canceled') return 'ملغاة';
+    return status;
+  }
+  // Totals
+  let totalIncome = 0, totalExpected = 0, totalLost = 0;
+  filtered.forEach(t => {
+    const st = savedTasks.find(s => s.id === t.savedTaskId);
+    const price = st ? st.price : 0;
+    if(t.status === 'completed') totalIncome += price;
+    if(t.status === 'undergoing') totalExpected += price;
+    if(t.status === 'canceled') totalLost += price;
+  });
+  document.getElementById('officeReportResult').innerHTML = `
+    <div id='printableOfficeReport' style='background:#f9f9f9; padding:20px; border-radius:8px;'>
+      <h5 class='mb-3'>جميع المهام في الفترة المحددة</h5>
+      <table class='table table-bordered text-right'><thead><tr><th>العميل</th><th>اسم المهمة</th><th>تاريخ الاستحقاق</th><th>الحالة</th><th>السعر</th></tr></thead><tbody>${taskRows(filtered)}</tbody></table>
+      <div class='mt-4'>
+        <strong>إجمالي الدخل (المهام المكتملة):</strong> <span>${totalIncome}</span><br>
+        <strong>إجمالي المتوقع (المهام الجارية):</strong> <span>${totalExpected}</span><br>
+        <strong>الدخل المفقود (المهام الملغاة):</strong> <span>${totalLost}</span>
+      </div>
+    </div>
+    <div class='mt-3'>
+      <button class='btn btn-success mr-2' onclick='printOfficeReport()'>طباعة</button>
+      <button class='btn btn-warning' onclick='exportOfficePDF()'>تصدير PDF</button>
+    </div>
+  `;
+}
+function printOfficeReport() {
+  const printContents = document.getElementById('printableOfficeReport').innerHTML;
+  const win = window.open('', '', 'height=700,width=900');
+  win.document.write('<html><head><title>تقرير المكتب</title>');
+  win.document.write('<style>body{direction:rtl;font-family:tahoma,Arial;}</style>');
+  win.document.write('</head><body >');
+  win.document.write(printContents);
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+}
+function exportOfficePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+  doc.html(document.getElementById('printableOfficeReport'), {
+    callback: function (doc) {
+      doc.save('تقرير_المكتب.pdf');
+    },
+    margin: [20, 20, 20, 20],
+    autoPaging: 'text',
+    html2canvas: { scale: 1, useCORS: true },
+    x: 0,
+    y: 0
+  });
+}
+
+    </script>
+
   </body>
 </html>
